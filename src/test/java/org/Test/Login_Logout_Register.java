@@ -26,9 +26,7 @@ public class Login_Logout_Register extends driverSetUp {
     // testcase2
     @Test
     public void LoginUserWithCorrectEmailAndPassowrd() throws IOException {
-        //  loginPage.waitTillTheAutomationImageIsVisible();
         loginPage.acceptCookie();
-        //Assert.assertTrue(loginPage.isPageLoadSuccessfully());
         loginPage.clickOnlogin_signupButton();
         Assert.assertTrue(loginPage.isLoginToYourAccountDescriptionVisible());
         loginPage.fillEmailAddress();

@@ -1,15 +1,16 @@
 package org.Pages;
 
 import org.Helper.FileHandler;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 
 public class LoginPage {
@@ -17,14 +18,12 @@ public class LoginPage {
     protected WebDriver driver;
     protected WebDriverWait wait;
 
-    // Konstruktor - inicializálja az elemeket a PageFactory-val
     public LoginPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        PageFactory.initElements(driver, this); // PageFactory inicializálás
+        PageFactory.initElements(driver, this);
     }
 
-    // WebElementek keresése @FindBy annotációval
     @FindBy(css = "input[data-qa=login-email]")
     private WebElement emailAddressField;
 
@@ -58,7 +57,8 @@ public class LoginPage {
     @FindBy(xpath = "//a[@href='/login']")
     private WebElement loginSignupButton;
 
-    @FindBy(xpath = "//a[@href='/contact us']")
+    // @FindBy(xpath = "//a[@href='/Contact us']")
+    @FindBy(xpath = "//li[last()]")
     private WebElement contactUsButton;
 
     @FindBy(xpath = "//a[@href='/logout']")
@@ -73,12 +73,23 @@ public class LoginPage {
     @FindBy(xpath = "//p[contains(text(), 'Email Address already exist!')]")
     private WebElement alreadyExistingErrorMessage;
 
-    // függvények
+    @FindBy(className = "col-sm-8")
+    private WebElement menu;
 
-    // Várakozás az AutomationImage megjelenésére
-    public void waitTillTheAutomationImageIsVisible() {
-        wait.until(ExpectedConditions.visibilityOf(automationImage)).isDisplayed();
+
+    public List<WebElement> menuItems() {
+       return menu.findElements(By.xpath(".//li/a"));
     }
+
+    public void selectAnOptionFromMenu(String href) {
+        List<WebElement> items = menuItems();
+        for (WebElement item : items) {
+            if(Objects.equals(item.getAttribute("href"), href)) {
+                item.click();
+            }
+        }
+    }
+
 
     public void clickOnLoginSignupButton() {
         loginSignupButton.click();
@@ -108,16 +119,10 @@ public class LoginPage {
         cookieConsentButton.click();
     }
 
-    public boolean isPageLoadSuccessfully() {
-        System.out.println(driver.getTitle());
-        if (Objects.equals(driver.getTitle(), "Automation Exercise - Signup / Login")) {
-            System.out.println("Sikeres betöltés");
-            return true;
-        } else {
-            System.out.println("A cím nem egyezik a várt értékkel");
-            return false;
-        }
+    public void clickOnContactBtn() {
+        contactUsButton.click();
     }
+
 
     public void loginHappyPath() {
         acceptCookie();

@@ -9,7 +9,6 @@ import java.time.Duration;
 
 public class driverSetUp {
 
-    // létrehozzuk a webdrivert, amit minden példány esetén és tesztlefutásnál megtesz majd a program
             protected WebDriver driver;
 
             public void getWebdriver() {
@@ -18,7 +17,6 @@ public class driverSetUp {
                 driver.manage().window().maximize();
                 driver.get("https://automationexercise.com/login");
 
-                // implicit wait, mindentől függetlenül vár annyi secundumig amennyit megadunk
                 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
             }
 
