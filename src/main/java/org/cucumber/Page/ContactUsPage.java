@@ -1,9 +1,11 @@
-package org.Pages;
+package org.cucumber.Page;
 
+import org.cucumber.Helper.Navigation;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +48,7 @@ public class ContactUsPage {
         return contactForm.findElements(By.xpath(".//input  | .//textarea"));
     }
 
-    public void inputOfForm(String dataQa, String value) {
+    public void SendInputOfForm(String dataQa, String value) {
         List<WebElement> inputs = inputsWithinContactForm();
         for (WebElement input : inputs) {
             if(Objects.equals(input.getAttribute("data-qa"),  dataQa)) {
@@ -55,8 +57,23 @@ public class ContactUsPage {
         }
     }
 
+    public List <String> inputsWithinContactFormValues() {
+        List <WebElement> elements = inputsWithinContactForm();
+        List <String> result = new ArrayList<>();
+        for (WebElement element : elements) {
+            result.add(element.getText());
+        }
+        for (String s : result) {
+            System.out.println(s);
+        }
+        return result;
+    }
+
+
+
     public void clickOnSubmitBtn() {
-        ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+        Navigation nav = new Navigation();
+        nav.scrollToTheBottomTop(driver, "bottom");
         submitBtn.click();
     }
 
@@ -68,6 +85,7 @@ public class ContactUsPage {
         Alert alert = driver.switchTo().alert();
         alert.accept();
     }
+
 
     public boolean isSuccessMessageDisplayed() {
         return successMessage.isDisplayed();

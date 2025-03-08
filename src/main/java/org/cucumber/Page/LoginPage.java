@@ -1,27 +1,32 @@
-package org.Pages;
+package org.cucumber.Page;
 
-import org.Helper.FileHandler;
+import org.cucumber.Helper.FileHandler;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class LoginPage {
 
     protected WebDriver driver;
-    protected WebDriverWait wait;
 
     public LoginPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        PageFactory.initElements(driver, this);
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver instance is null something is wrong with setup");
+        } else {
+            this.driver = driver;
+            PageFactory.initElements(driver, this);
+
+        }
     }
 
     @FindBy(css = "input[data-qa=login-email]")
@@ -35,6 +40,7 @@ public class LoginPage {
 
     @FindBy(css = "button[data-qa=signup-button]")
     private WebElement signUpButton;
+
 
     @FindBy(css = "input[data-qa=signup-name]")
     private WebElement signUpNameField;
@@ -53,9 +59,6 @@ public class LoginPage {
 
     @FindBy(xpath = ".//p[contains(text(), 'Your email or password is incorrect!')]")
     private WebElement wrongLoginMessage;
-
-    @FindBy(xpath = "//a[@href='/login']")
-    private WebElement loginSignupButton;
 
     // @FindBy(xpath = "//a[@href='/Contact us']")
     @FindBy(xpath = "//li[last()]")
@@ -78,22 +81,27 @@ public class LoginPage {
 
 
     public List<WebElement> menuItems() {
-       return menu.findElements(By.xpath(".//li/a"));
+       return menu.findElements(By.xpath(".//li"));
+
     }
+
 
     public void selectAnOptionFromMenu(String href) {
-        List<WebElement> items = menuItems();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        List<WebElement> items = wait.until(ExpectedConditions.visibilityOfAllElements(menuItems()));
+
         for (WebElement item : items) {
-            if(Objects.equals(item.getAttribute("href"), href)) {
+            if (Objects.equals(item.getText(), href)) {
+                System.out.println(item.getText());
                 item.click();
+                return;
             }
         }
+
+        throw new NoSuchElementException("Item with the added href attribute is not available: " + href);
     }
 
 
-    public void clickOnLoginSignupButton() {
-        loginSignupButton.click();
-    }
 
     public void fillEmailAddress() {
         emailAddressField.sendKeys("marci12345678956@gmail.com");
@@ -107,16 +115,36 @@ public class LoginPage {
         passwordField.sendKeys("password96+");
     }
 
+    public void fillCredentialsForLogin(String validOrNot) {
+        if(validOrNot.equalsIgnoreCase("valid")) {
+            fillEmailAddress();
+            fillPassword();
+        }
+        else if(validOrNot.equalsIgnoreCase("invalid")){
+            fillEmailAddress();
+            fillIncorrectPassword();
+        }
+    }
+
     public boolean isWrongLoginMessageAppears() {
         return wrongLoginMessage.isDisplayed();
     }
 
-    public void clickLogin() {
-        loginButton.click();
+    public void clickButtonFromLoginSignUpContainer(String button) {
+        if(button.equalsIgnoreCase("login-button")) {
+            loginButton.click();
+        }
+        else if(button.equalsIgnoreCase("signup-button")) {
+            signUpButton.click();
+        }
     }
 
+
+
     public void acceptCookie() {
-        cookieConsentButton.click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement cookieButton = wait.until(ExpectedConditions.elementToBeClickable(cookieConsentButton));
+        cookieButton.click();
     }
 
     public void clickOnContactBtn() {
@@ -124,13 +152,16 @@ public class LoginPage {
     }
 
 
+
     public void loginHappyPath() {
         acceptCookie();
-        clickOnLoginSignupButton();
+      //  clickOnLoginSignupButton();
         fillEmailAddress();
         fillPassword();
-        clickLogin();
+        clickButtonFromLoginSignUpContainer("login-button");
     }
+
+
 
     public boolean isLoggedInAsVisible() throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -173,11 +204,18 @@ public class LoginPage {
         signUpButton.click();
     }
 
-    public void clickOnlogin_signupButton() {
-        loginSignupButton.click();
-    }
-
     public boolean isAlreadyExistingErrorMessageDisplayed() {
         return alreadyExistingErrorMessage.isDisplayed();
     }
+
+    public void escapeFromTheDriver() {
+        driver.quit();
+    }
+
+
+    public String getTitle() {
+       return driver.getTitle();
+    }
+
+
 }
