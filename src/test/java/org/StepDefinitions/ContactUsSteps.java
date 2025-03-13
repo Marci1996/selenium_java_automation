@@ -4,6 +4,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.cucumber.Page.ContactUsPage;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
@@ -17,7 +18,6 @@ public class ContactUsSteps {
 
     @Before
     public void setup() {
-        System.out.println("sikerült elinditani a contactusstept");
         this.driver = HooksCucumber.getDriver();
         cPage = new ContactUsPage(driver);
     }
@@ -27,11 +27,11 @@ public class ContactUsSteps {
         Assert.assertTrue(cPage.titleVisibility());
     }
 
-    @Then("User enters the following information within the contact page form")
+    @When("User enters the following information within the contact page form")
     public void userEntersTheFollowingInformationWithinTheContactPageForm(DataTable dTable) {
         List<List<String>> data = dTable.asLists(String.class);
         for (List<String> row : data) {
-            cPage.SendInputOfForm(row.get(0), row.get(1));
+            cPage.SendInputForContactForm(row.get(0), row.get(1));
         }
     }
 

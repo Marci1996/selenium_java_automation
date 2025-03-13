@@ -48,7 +48,7 @@ public class ContactUsPage {
         return contactForm.findElements(By.xpath(".//input  | .//textarea"));
     }
 
-    public void SendInputOfForm(String dataQa, String value) {
+    public void SendInputForContactForm(String dataQa, String value) {
         List<WebElement> inputs = inputsWithinContactForm();
         for (WebElement input : inputs) {
             if(Objects.equals(input.getAttribute("data-qa"),  dataQa)) {
@@ -72,7 +72,7 @@ public class ContactUsPage {
 
 
     public void clickOnSubmitBtn() {
-        Navigation nav = new Navigation();
+        Navigation nav = new Navigation(driver);
         nav.scrollToTheBottomTop(driver, "bottom");
         submitBtn.click();
     }

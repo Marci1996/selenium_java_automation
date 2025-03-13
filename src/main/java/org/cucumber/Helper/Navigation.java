@@ -7,6 +7,12 @@ import org.openqa.selenium.interactions.Actions;
 
 public class Navigation {
 
+    private WebDriver driver;
+
+    public Navigation(WebDriver driver) {
+        this.driver = driver;
+    }
+
     public void scrollToTheElement (WebDriver driver, WebElement element) {
         Actions actions = new Actions(driver);
         actions.moveToElement(element).perform();

@@ -80,6 +80,7 @@ public class LoginPage {
     private WebElement menu;
 
 
+
     public List<WebElement> menuItems() {
        return menu.findElements(By.xpath(".//li"));
 
@@ -185,6 +186,7 @@ public class LoginPage {
         return signupVerification.isDisplayed();
     }
 
+
     public void fillSignUpName() {
         signUpNameField.sendKeys("marci12345");
     }
@@ -196,8 +198,13 @@ public class LoginPage {
         if (Objects.equals(newOrNot, "notNew")) {
             signUpEmailField.sendKeys(email);
         } else {
-            signUpEmailField.sendKeys(email + "*");
+            signUpEmailField.sendKeys(email + "a");
         }
+    }
+
+    public void fillSignUpCredentials() throws IOException {
+        fillSignUpName();
+        fillSignUpEmail("notNew_");
     }
 
     public void clickOnSignUpButton() {

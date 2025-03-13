@@ -22,7 +22,8 @@ public class HooksCucumber {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.get("https://automationexercise.com/login");
+        driver.get("https://automationexercise.com");
+        System.out.println(driver.getTitle());
 
         System.out.println("Everything success around the driver setup");
     }
